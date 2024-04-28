@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const Center(child: Text('Home Screen')),
     const AddScreen(),
-    const ProfileScreen(),
+     ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ProfileScreen(),
+                    builder: (context) => ProfileScreen(),
                   ),
                 );
               },
