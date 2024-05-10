@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latihan_flutter/colors/colors.dart';
+import 'package:latihan_flutter/screen/detail_screen.dart';
 import 'package:latihan_flutter/screen/info_screen.dart';
 import 'add_screen.dart';
 import 'profile_screen.dart';
@@ -17,7 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const Center(child: Text('Home Screen')),
     const AddScreen(),
-     ProfileScreen(),
+    ProfileScreen(),
+    DetailScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -69,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  const AddScreen(),
+                    builder: (context) => const AddScreen(),
                   ),
                 );
               },
@@ -82,6 +84,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfileScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.details, color: navigation),
+              title: const Center(child: Text("Detail")),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(),
                   ),
                 );
               },
@@ -99,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.black,
         selectedLabelStyle: TextStyle(color: textNavigation),
         unselectedLabelStyle: const TextStyle(color: Colors.black),
-        items: const <BottomNavigationBarItem>[
+        items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -112,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.people),
             label: 'Profile',
           ),
+          
         ],
         backgroundColor: navigation,
         currentIndex: _selectedIndex,
