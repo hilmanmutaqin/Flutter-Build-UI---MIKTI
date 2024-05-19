@@ -1,63 +1,125 @@
-import 'package:flutter/material.dart';
-import 'package:latihan_flutter/colors/colors.dart';
+import 'dart:async';
+import 'dart:math';
 
-class InfoScreen extends StatefulWidget {
-  const InfoScreen({super.key});
+import 'package:flutter/material.dart';
+
+class DraggableContainer extends StatelessWidget {
+  const DraggableContainer({super.key});
+
 
   @override
-  _InfoScreenState createState() => _InfoScreenState();
+  Widget build(BuildContext context) {
+    return const DraggableContainerDemo();
+  }
 }
 
-class _InfoScreenState extends State<InfoScreen> {
-  double _xPosition = 0;
-  double _yPosition = 0;
-  double _containerHeight = 200;
-  double _containerWidth = 200;
+class DraggableContainerDemo extends StatefulWidget {
+  const DraggableContainerDemo({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final screenHeight = MediaQuery.of(context).size.height;
+  _DraggableContainerDemoState createState() => _DraggableContainerDemoState();
+}
 
-      setState(() {
-        _xPosition = (screenWidth - _containerWidth) / 2;
-        _yPosition = (screenHeight - _containerHeight) / 2;
-      });
+class _DraggableContainerDemoState extends State<DraggableContainerDemo> {
+  Offset position = const Offset(100, 100);
+  double radius = 0.0;
+  EdgeInsets margin = const EdgeInsets.all(0.0);
+  Color color = Colors.blue;
+  Timer? cooldownTimer;
+  bool canChangeShape = true;
+
+  void _changeShape() {
+    setState(() {
+      final random = Random();
+      radius = random.nextDouble() * 50;
+      margin = EdgeInsets.all(random.nextDouble() * 20);
+      color = Color.fromARGB(
+        255,
+        random.nextInt(256),
+        random.nextInt(256),
+        random.nextInt(256),
+      );
+    });
+  }
+
+  void _onPanUpdate(DragUpdateDetails details, double maxWidth, double maxHeight) {
+    setState(() {
+      double newDx = position.dx + details.delta.dx;
+      double newDy = position.dy + details.delta.dy;
+
+      bool atBorder = false;
+
+      // Check if the new position is touching the borders
+      if (newDx <= 0.0 || newDx >= maxWidth || newDy <= 0.0 || newDy >= maxHeight) {
+        atBorder = true;
+      }
+
+      // Clamp the new position within the screen bounds
+      newDx = newDx.clamp(0.0, maxWidth);
+      newDy = newDy.clamp(0.0, maxHeight);
+
+      position = Offset(newDx, newDy);
+
+      // Trigger shape change if at the border and cooldown allows
+      if (atBorder && canChangeShape) {
+        _changeShape();
+        canChangeShape = false;
+        cooldownTimer?.cancel();
+        cooldownTimer = Timer(Duration(seconds: 1), () {
+          canChangeShape = true;
+        });
+      }
     });
   }
 
   @override
+  void dispose() {
+    cooldownTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: SafeArea(
-          child: Container(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: _yPosition,
-                  left: _xPosition,
-                  child: GestureDetector(
-                    onPanUpdate: (DragUpdateDetails e) {
-                      setState(() {
-                        _xPosition += e.delta.dx;
-                        _yPosition += e.delta.dy;
-                      });
-                    },
-                    child: Container(
-                      height: _containerHeight,
-                      width: _containerWidth,
-                      color: navigation,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Draggable Container'),
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double maxWidth = constraints.maxWidth - 100 - margin.horizontal;
+          double maxHeight = constraints.maxHeight - 100 - margin.vertical;
+
+          return Stack(
+            children: <Widget>[
+              Positioned(
+                top: position.dy,
+                left: position.dx,
+                child: GestureDetector(
+                  onPanUpdate: (details) => _onPanUpdate(details, maxWidth, maxHeight),
+                  child: Container(
+                    margin: margin,
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(radius),
                     ),
                   ),
-                )
-              ],
-            ),
-          ),
-        ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: _changeShape,
+                    child: Text('Change Shape and Color'),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
