@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:latihan_flutter/screen/home_screen.dart';
+import 'auth/login_screen.dart';
 
 void main() {
-  runApp( const LatihanFlutter());
+  runApp(const LatihanFlutter());
 }
+
 class LatihanFlutter extends StatelessWidget {
   const LatihanFlutter({super.key});
 
@@ -12,8 +13,7 @@ class LatihanFlutter extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Latihan App',
-      home: HomeScreen() ,
+      home: LoginScreen(),
     );
   }
 }
-
