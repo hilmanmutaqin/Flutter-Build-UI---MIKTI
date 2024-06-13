@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihan_flutter/colors/colors.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: navigation,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

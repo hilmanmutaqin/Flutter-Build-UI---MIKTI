@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihan_flutter/colors/colors.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -29,6 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: navigation,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
